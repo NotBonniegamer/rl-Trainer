@@ -2,12 +2,10 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reaktionstrainer</title>
+  <title>Reaktionstrainer – Menü</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div id="menu">
     <h1>🎯 Reaktionstrainer</h1>
     <label for="targetCount">Wie viele Kreise willst du treffen?</label>
@@ -15,10 +13,14 @@
     <button onclick="startGame()">Start</button>
   </div>
 
-  <div id="gameArea" style="display:none;"></div>
-
-  <div id="result" style="display:none;"></div>
-
-  <script src="script.js"></script>
+  <script>
+    function startGame() {
+      const count = document.getElementById('targetCount').value;
+      // Speichere die Anzahl im LocalStorage
+      localStorage.setItem('targetCount', count);
+      // Weiterleitung zur Spielseite
+      window.location.href = 'game.html';
+    }
+  </script>
 </body>
 </html>
