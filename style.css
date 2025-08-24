@@ -1,4 +1,3 @@
-/* Grundlayout */
 body {
   margin: 0;
   padding: 0;
@@ -12,8 +11,7 @@ body {
   height: 100vh;
 }
 
-/* Container */
-#trainer, #modeSelect, #gameArea {
+#menu, #result {
   background-color: rgba(0, 0, 0, 0.6);
   padding: 30px;
   border-radius: 15px;
@@ -23,7 +21,15 @@ body {
   width: 90%;
 }
 
-/* Buttons */
+input[type="number"] {
+  padding: 10px;
+  font-size: 16px;
+  margin: 10px 0;
+  width: 100px;
+  border-radius: 8px;
+  border: none;
+}
+
 button {
   background-color: #00bfff;
   border: none;
@@ -40,35 +46,23 @@ button:hover {
   background-color: #0099cc;
 }
 
-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
+#gameArea {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Status & Ergebnis */
-#status {
-  font-size: 24px;
-  margin: 20px 0;
-  font-weight: bold;
+.circle {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-color: #00bfff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s ease;
 }
 
-#result {
-  font-size: 20px;
-  margin-top: 20px;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  button {
-    font-size: 16px;
-    padding: 12px 20px;
-  }
-
-  #status {
-    font-size: 20px;
-  }
-
-  #result {
-    font-size: 18px;
-  }
+.circle:hover {
+  transform: scale(1.1);
 }
