@@ -1,52 +1,56 @@
-let mode = null;
-let startTime, timeout;
+let totalTargets = 0;
+let hits = 0;
+let reactionTimes = [];
+let lastSpawnTime = 0;
 
-function setMode(selectedMode) {
-  mode = selectedMode;
-  document.getElementById("modeSelect").style.display = "none";
-  document.getElementById("gameArea").style.display = "block";
+function startGame() {
+  totalTargets = parseInt(document.getElementById('targetCount').value);
+  hits = 0;
+  reactionTimes = [];
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('gameArea').style.display = 'block';
+  spawnCircle();
 }
 
-function startTest() {
-  result.textContent = "";
-  status.textContent = "Warte auf Signal...";
-  startBtn.disabled = true;
+function spawnCircle() {
+  const gameArea = document.getElementById('gameArea');
+  gameArea.innerHTML = ''; // Clear previous circle
 
-  const delay = Math.random() * 3000 + 2000;
-  timeout = setTimeout(() => {
-    status.textContent = "JETZT!";
-    startTime = performance.now();
+  const circle = document.createElement('div');
+  circle.className = 'circle';
 
-    if (mode === "touch") {
-      document.body.addEventListener("mousedown", recordReaction);
-      document.body.addEventListener("touchstart", recordReaction);
-    } else if (mode === "controller") {
-      listenToGamepad();
-    }
-  }, delay);
-}
+  // Random position
+  const x = Math.random() * (window.innerWidth - 100);
+  const y = Math.random() * (window.innerHeight - 100);
+  circle.style.left = `${x}px`;
+  circle.style.top = `${y}px`;
 
-function recordReaction() {
-  const reactionTime = performance.now() - startTime;
-  status.textContent = "Bereit?";
-  result.textContent = `Reaktionszeit: ${Math.round(reactionTime)} ms`;
-  startBtn.disabled = false;
+  lastSpawnTime = performance.now();
 
-  document.body.removeEventListener("mousedown", recordReaction);
-  document.body.removeEventListener("touchstart", recordReaction);
-  clearTimeout(timeout);
-}
+  circle.onclick = () => {
+    const reactionTime = performance.now() - lastSpawnTime;
+    reactionTimes.push(reactionTime);
+    hits++;
 
-function listenToGamepad() {
-  const checkGamepad = () => {
-    const gp = navigator.getGamepads()[0];
-    if (gp && gp.buttons[0].pressed) {
-      recordReaction();
+    if (hits < totalTargets) {
+      spawnCircle();
     } else {
-      requestAnimationFrame(checkGamepad);
+      endGame();
     }
   };
-  checkGamepad();
+
+  gameArea.appendChild(circle);
 }
 
-startBtn.addEventListener("click", startTest);
+function endGame() {
+  document.getElementById('gameArea').style.display = 'none';
+  const avgTime = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
+  document.getElementById('result').innerHTML = `
+    <h2>✅ Fertig!</h2>
+    <p>Du hast <strong>${totalTargets}</strong> Kreise getroffen.</p>
+    <p>Durchschnittliche Reaktionszeit: <strong>${avgTime} ms</strong></p>
+    <button onclick="location.reload()">Nochmal spielen</button>
+  `;
+  document.getElementById('result').style.display = 'block';
+}
